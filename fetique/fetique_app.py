@@ -4,8 +4,12 @@
 from PyQt5.QtWidgets import QLabel, QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QPushButton, QFileDialog, QLineEdit, QSpinBox
 from PyQt5 import QtSvg
 import svgwrite
-from feuille import Feuille
-from f_widgets import FSelectFile, FInputQSpinBox
+try:
+    from .feuille import Feuille
+    from .f_widgets import FSelectFile, FInputQSpinBox
+except :
+    from feuille import Feuille
+    from f_widgets import FSelectFile, FInputQSpinBox
 import sys, logging
 
 class FetiqueApp(QMainWindow):
@@ -39,6 +43,7 @@ class FetiqueApp(QMainWindow):
         main_layout.addWidget(self.feuille)
 
         self.show()
+        self.update_feuille()
 
 
     def update_feuille(self):

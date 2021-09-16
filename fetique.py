@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from fetique.fetique_app import *
+from PyQt5.QtWidgets import QApplication
+import sys
 
-app = FetiqueApp()
+import fetique
 
-app.run()
+app = QApplication([])
+fetique = fetique.FetiqueApp()
+sys.exit(app.exec())
