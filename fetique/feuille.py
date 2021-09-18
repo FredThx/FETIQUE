@@ -17,8 +17,9 @@ class Feuille(QWidget):
         self.f_width = width
         self.f_height = height
         self.setFixedSize(width*2.5, height*2.5)
-        #self.setStyleSheet("border: 1px solid black; border-radius: 10px;")
+        self.setStyleSheet("border: 1px solid black; border-radius: 10px;")
         self.label = QLabel(self)
+        self.image = None
 
 
 
@@ -46,11 +47,11 @@ class Feuille(QWidget):
                 column = 0
                 row +=1
                 if (1+row)*(height+marge)>self.f_height:
-                    OUPS
+                    pass
         dwg.save()
         drawing = svg2rlg('temp.svg')
         renderPM.drawToFile(drawing, 'temp.png', fmt='PNG')
-        image = QPixmap('temp.png')
-        self.label.setPixmap(image)
+        self.image = QPixmap('temp.png')
+        self.label.setPixmap(self.image)
         self.label.adjustSize()
-        self.resize(image.width(), self.height())
+        self.resize(self.image.width(), self.height())

@@ -43,13 +43,17 @@ class FInputQSpinBox(QWidget):
     '''
     valueChanged = pyqtSignal(name = "valueChanged")
 
-    def __init__(self, text, parent=None, default_value = 0):
+    def __init__(self, text, parent=None, default_value = 0, min_value = None, max_value = None):
         super(QWidget, self).__init__(parent)
         layout = QHBoxLayout()
         self.setLayout(layout)
         layout.addWidget(QLabel(text))
         self.sp_value = QSpinBox()
         self.sp_value.setValue(default_value)
+        if min_value:
+            self.sp_value.setMinimum(min_value)
+        if max_value:
+            self.setMaximum(max_value)
         layout.addWidget(self.sp_value)
         self.sp_value.valueChanged.connect(self.on_value_changed)
 
