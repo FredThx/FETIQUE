@@ -21,9 +21,6 @@ class Feuille(QWidget):
         self.label = QLabel(self)
         self.image = None
 
-
-
-
     def update(self, path_file, width, height, qty, marge = 5, maintain_ratio = True):
         dwg = svgwrite.Drawing('temp.svg', profile = 'tiny', size=(self.f_width*mm, self.f_height*mm))
         row, column, marge = 0,0,5

@@ -1,2 +1,1 @@
-Imprimer SVG vs png
-A l'ouverture de l'image : initialiser les dimensions.
+gérer les dimension en float vs int

@@ -3,9 +3,9 @@
 
 from PyQt5.QtWidgets import QLabel, QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QPushButton, QFileDialog, QLineEdit, QSpinBox
 from PyQt5 import QtSvg
-from PyQt5.QtGui import QPainter, QPixmap
+from PyQt5.QtGui import QPainter, QPixmap, QIcon
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 import svgwrite
 try:
     from .feuille import Feuille
@@ -20,6 +20,8 @@ class FetiqueApp(QMainWindow):
     def __init__(self, parent = None):
         super(FetiqueApp, self).__init__(parent)
         self.setWindowTitle("Fetique")
+        self.icons_bt_maintain_ratio = (QIcon("ratio_on"), QIcon("ratio_off"))
+        self.image_size = QSize()
         #Main
         main_layout = QVBoxLayout()
         main_widget = QWidget()
@@ -28,15 +30,26 @@ class FetiqueApp(QMainWindow):
         #Selection fichier
         self.qt_path_file = FSelectFile("Fichier étiquettes :")
         main_layout.addWidget(self.qt_path_file)
-        self.qt_path_file.pathChanged.connect(self.update_feuille)
-        #largeur
-        self.qt_witdh = FInputQSpinBox("Largeur en mm :", default_value = 50)
-        main_layout.addWidget(self.qt_witdh)
-        self.qt_witdh.valueChanged.connect(self.update_feuille)
-        #hauteur
-        self.qt_height = FInputQSpinBox("hauteur en mm :", default_value = 40)
-        main_layout.addWidget(self.qt_height)
-        self.qt_height.valueChanged.connect(self.update_feuille)
+        self.qt_path_file.pathChanged.connect(self.on_file_changed)
+        # Dimensions
+        dimensions_layout = QHBoxLayout()
+        main_layout.addLayout(dimensions_layout)
+        dimensions_interior_layout = QVBoxLayout()
+        dimensions_layout.addLayout(dimensions_interior_layout)
+        ##largeur
+        self.qt_witdh = FInputQSpinBox("Largeur  :", default_value = 50, suffix = " mm")
+        dimensions_interior_layout.addWidget(self.qt_witdh)
+        self.qt_witdh.valueChanged.connect(self.on_width_changed)
+        ##hauteur
+        self.qt_height = FInputQSpinBox("hauteur :", default_value = 40, suffix = " mm")
+        dimensions_interior_layout.addWidget(self.qt_height)
+        self.qt_height.valueChanged.connect(self.on_height_changed)
+        ##Bouton maintain_ratio
+        self.bt_maintain_ratio = QPushButton()
+        self.bt_maintain_ratio.setIcon(self.icons_bt_maintain_ratio[0])
+        self.is_maintain_ratio = True
+        dimensions_layout.addWidget(self.bt_maintain_ratio)
+        self.bt_maintain_ratio.clicked.connect(self.on_maintain_ratio_changed)
         #qté
         self.qt_qty = FInputQSpinBox("Nombre d'étiquettes :", default_value = 1)
         main_layout.addWidget(self.qt_qty)
@@ -51,19 +64,58 @@ class FetiqueApp(QMainWindow):
         self.show()
         self.update_feuille()
 
+    def on_maintain_ratio_changed(self):
+        '''Gestion Changement
+        '''
+        self.is_maintain_ratio = not self.is_maintain_ratio
+        self.bt_maintain_ratio.setIcon(self.icons_bt_maintain_ratio[0 if self.is_maintain_ratio else 1])
+        if self.is_maintain_ratio:
+            self.maintain_ratio()
+
+    def on_file_changed(self):
+        '''Quand le fichier image est modifié
+        '''
+        image = QPixmap(self.qt_path_file.path())
+        self.image_size = image.size()
+        self.maintain_ratio()
+        self.update_feuille()
+
+    def on_width_changed(self):
+        #TODO : pb les vakleurs sont des entiers!!!!
+        if self.is_maintain_ratio:
+            self.qt_height.blockSignals(True)
+            self.qt_height.setValue(self.qt_witdh.value()*self.image_size.height()/self.image_size.width())
+            self.qt_height.blockSignals(False)
+        self.update_feuille()
+
+    def on_height_changed(self):
+        #TODO : pb les vakleurs sont des entiers!!!!
+        if self.is_maintain_ratio:
+            self.qt_witdh.blockSignals(True)
+            self.qt_witdh.setValue(self.qt_height.value()*self.image_size.width()/self.image_size.height())
+            self.qt_witdh.blockSignals(False)
+        self.update_feuille()
 
     def update_feuille(self):
         '''Met à jour l'image
         '''
+        print(f"self.qt_witdh.value() : {self.qt_witdh.value()}/t/tself.qt_height.value() : {self.qt_height.value()}")
         self.feuille.update(
             self.qt_path_file.path(),
             self.qt_witdh.value(),
             self.qt_height.value(),
             self.qt_qty.value())
 
+    def maintain_ratio(self):
+        '''Maintient l'aspect ratio de l'image
+        '''
+        size = QSize(self.image_size)
+        size.scale(self.qt_witdh.value(),self.qt_height.value(), Qt.KeepAspectRatio)
+        self.qt_witdh.setValue(size.width())
+        self.qt_height.setValue(size.height())
+
     def print(self):
         '''Imprime l'image
-        TODO : faire en SVF et non PNG (qui est dégeux)
         '''
         printer = QPrinter(QPrinter.HighResolution)
         printer.setOrientation(QPrinter.Portrait)
@@ -73,8 +125,8 @@ class FetiqueApp(QMainWindow):
         printer.setFullPage(True)
         printer.setColorMode(QPrinter.Color)
         dialog = QPrintDialog(printer)
+        image = QPixmap('temp.svg')
         if dialog.exec_():
-            image = QPixmap('temp.svg')
             painter = QPainter()
             painter.begin(printer)
             painter.setRenderHint(QPainter.Antialiasing)
