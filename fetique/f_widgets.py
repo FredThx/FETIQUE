@@ -55,7 +55,7 @@ class FInputQSpinBox(QWidget):
         if min_value:
             self.sp_value.setMinimum(min_value)
         if max_value:
-            self.setMaximum(max_value)
+            self.sp_value.setMaximum(max_value)
         layout.addWidget(self.sp_value)
         self.sp_value.valueChanged.connect(self.on_value_changed)
 

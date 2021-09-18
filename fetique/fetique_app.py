@@ -10,9 +10,11 @@ import svgwrite
 try:
     from .feuille import Feuille
     from .f_widgets import FSelectFile, FInputQSpinBox
+    PATH = "fetique/"
 except :
     from feuille import Feuille
     from f_widgets import FSelectFile, FInputQSpinBox
+    PATH = ""
 import sys, logging
 
 class FetiqueApp(QMainWindow):
@@ -20,7 +22,7 @@ class FetiqueApp(QMainWindow):
     def __init__(self, parent = None):
         super(FetiqueApp, self).__init__(parent)
         self.setWindowTitle("Fetique")
-        self.icons_bt_maintain_ratio = (QIcon("ratio_on"), QIcon("ratio_off"))
+        self.icons_bt_maintain_ratio = (QIcon(PATH + "ratio_on"), QIcon(PATH + "ratio_off"))
         self.image_size = QSize()
         #Main
         main_layout = QVBoxLayout()
@@ -37,11 +39,11 @@ class FetiqueApp(QMainWindow):
         dimensions_interior_layout = QVBoxLayout()
         dimensions_layout.addLayout(dimensions_interior_layout)
         ##largeur
-        self.qt_witdh = FInputQSpinBox("Largeur  :", default_value = 50, suffix = " mm")
+        self.qt_witdh = FInputQSpinBox("Largeur  :", default_value = 50, suffix = " mm", min_value = 10, max_value = 210)
         dimensions_interior_layout.addWidget(self.qt_witdh)
         self.qt_witdh.valueChanged.connect(self.on_width_changed)
         ##hauteur
-        self.qt_height = FInputQSpinBox("hauteur :", default_value = 40, suffix = " mm")
+        self.qt_height = FInputQSpinBox("hauteur :", default_value = 40, suffix = " mm", min_value = 10, max_value = 297)
         dimensions_interior_layout.addWidget(self.qt_height)
         self.qt_height.valueChanged.connect(self.on_height_changed)
         ##Bouton maintain_ratio
@@ -99,7 +101,7 @@ class FetiqueApp(QMainWindow):
     def update_feuille(self):
         '''Met à jour l'image
         '''
-        print(f"self.qt_witdh.value() : {self.qt_witdh.value()}/t/tself.qt_height.value() : {self.qt_height.value()}")
+        #print(f"self.qt_witdh.value() : {self.qt_witdh.value()}/t/tself.qt_height.value() : {self.qt_height.value()}")
         self.feuille.update(
             self.qt_path_file.path(),
             self.qt_witdh.value(),

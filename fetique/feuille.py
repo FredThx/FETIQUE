@@ -3,6 +3,7 @@
 
 from PyQt5.QtWidgets import QWidget, QLabel, QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QPushButton, QFileDialog, QLineEdit, QSpinBox
 from PyQt5 import QtSvg
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 import svgwrite
 from svgwrite import mm
@@ -12,11 +13,11 @@ from reportlab.graphics import renderPM
 class Feuille(QWidget):
     '''Une représentation de la feuille à imprimer
     '''
-    def __init__(self, parent = None, width = 210, height = 296):
+    def __init__(self, parent = None, width = 210, height = 297):
         super(QWidget, self).__init__(parent)
         self.f_width = width
         self.f_height = height
-        self.setFixedSize(width*2.5, height*2.5)
+        self.setFixedSize(width*1.5, height*1.5) #TODO: mettre un zoom
         self.setStyleSheet("border: 1px solid black; border-radius: 10px;")
         self.label = QLabel(self)
         self.image = None
@@ -49,6 +50,7 @@ class Feuille(QWidget):
         drawing = svg2rlg('temp.svg')
         renderPM.drawToFile(drawing, 'temp.png', fmt='PNG')
         self.image = QPixmap('temp.png')
-        self.label.setPixmap(self.image)
+        self.label.setPixmap(self.image.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
         self.label.adjustSize()
-        self.resize(self.image.width(), self.height())
+        #self.label.resize(self.width(), self.height())
+        #self.resize(self.image.width(), self.image.height())
