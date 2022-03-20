@@ -57,8 +57,8 @@ class FetiqueApp(QMainWindow):
         main_layout.addWidget(self.qt_qty)
         self.qt_qty.valueChanged.connect(self.update_feuille)
         #print
-        bt_print = QPushButton("Imprime")
-        main_layout.addWidget(bt_print)
+        bt_print = QPushButton("Imprime (mais...)")
+        #main_layout.addWidget(bt_print)  "Disable!"
         bt_print.clicked.connect(self.print)
         #image
         self.feuille = Feuille()
@@ -83,7 +83,7 @@ class FetiqueApp(QMainWindow):
         self.update_feuille()
 
     def on_width_changed(self):
-        #TODO : pb les vakleurs sont des entiers!!!!
+        #TODO : pb les valeurs sont des entiers!!!!
         if self.is_maintain_ratio:
             self.qt_height.blockSignals(True)
             self.qt_height.setValue(self.qt_witdh.value()*self.image_size.height()/self.image_size.width())
@@ -91,7 +91,7 @@ class FetiqueApp(QMainWindow):
         self.update_feuille()
 
     def on_height_changed(self):
-        #TODO : pb les vakleurs sont des entiers!!!!
+        #TODO : pb les valeurs sont des entiers!!!!
         if self.is_maintain_ratio:
             self.qt_witdh.blockSignals(True)
             self.qt_witdh.setValue(self.qt_height.value()*self.image_size.width()/self.image_size.height())
@@ -117,7 +117,7 @@ class FetiqueApp(QMainWindow):
         self.qt_height.setValue(size.height())
 
     def print(self):
-        '''Imprime l'image
+        '''Imprime l'image (mais ça ne fonctionne pas bien!!!)
         '''
         printer = QPrinter(QPrinter.HighResolution)
         printer.setOrientation(QPrinter.Portrait)
@@ -139,6 +139,7 @@ class FetiqueApp(QMainWindow):
             painter.setWindow(image.rect())
             painter.drawPixmap(0, 0, image)
             painter.end()
+    
 
 if __name__ == "__main__":
     app = QApplication([])
