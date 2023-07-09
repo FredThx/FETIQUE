@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication
-import fetique
+from fetique.fetique_app import FetiqueApp
 import sys
 
 app = QApplication([])
-fetique = fetique.FetiqueApp()
+fetique = FetiqueApp()
 sys.exit(app.exec())
