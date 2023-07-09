@@ -51,7 +51,7 @@ class FInputQSpinBox(QWidget):
         self.sp_value = QSpinBox()
         if suffix:
             self.sp_value.setSuffix(suffix)
-        self.sp_value.setValue(default_value)
+        self.sp_value.setValue(int(default_value))
         if min_value:
             self.sp_value.setMinimum(min_value)
         if max_value:
@@ -65,4 +65,4 @@ class FInputQSpinBox(QWidget):
     def value(self):
         return self.sp_value.value()
     def setValue(self, value):
-        self.sp_value.setValue(value)
+        self.sp_value.setValue(int(value))

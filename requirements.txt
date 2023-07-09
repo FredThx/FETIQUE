@@ -1,2 +1,6 @@
 PyQt5
 svgwrite
+svglib
+rlPyCairo
+reportlab[renderpm]
+reportlab[pycairo]

@@ -11,7 +11,8 @@ try:
     from .feuille import Feuille
     from .f_widgets import FSelectFile, FInputQSpinBox
     PATH = "fetique/"
-except :
+except ModuleNotFoundError as e:
+    print(e)
     from feuille import Feuille
     from f_widgets import FSelectFile, FInputQSpinBox
     PATH = ""
@@ -86,7 +87,7 @@ class FetiqueApp(QMainWindow):
         #TODO : pb les valeurs sont des entiers!!!!
         if self.is_maintain_ratio:
             self.qt_height.blockSignals(True)
-            self.qt_height.setValue(self.qt_witdh.value()*self.image_size.height()/self.image_size.width())
+            self.qt_height.setValue(int(self.qt_witdh.value()*self.image_size.height()/self.image_size.width()))
             self.qt_height.blockSignals(False)
         self.update_feuille()
 
@@ -94,7 +95,7 @@ class FetiqueApp(QMainWindow):
         #TODO : pb les valeurs sont des entiers!!!!
         if self.is_maintain_ratio:
             self.qt_witdh.blockSignals(True)
-            self.qt_witdh.setValue(self.qt_height.value()*self.image_size.width()/self.image_size.height())
+            self.qt_witdh.setValue(int(self.qt_height.value()*self.image_size.width()/self.image_size.height()))
             self.qt_witdh.blockSignals(False)
         self.update_feuille()
 
@@ -113,8 +114,8 @@ class FetiqueApp(QMainWindow):
         '''
         size = QSize(self.image_size)
         size.scale(self.qt_witdh.value(),self.qt_height.value(), Qt.KeepAspectRatio)
-        self.qt_witdh.setValue(size.width())
-        self.qt_height.setValue(size.height())
+        self.qt_witdh.setValue(int(size.width()))
+        self.qt_height.setValue(int(size.height()))
 
     def print(self):
         '''Imprime l'image (mais ça ne fonctionne pas bien!!!)
@@ -139,9 +140,4 @@ class FetiqueApp(QMainWindow):
             painter.setWindow(image.rect())
             painter.drawPixmap(0, 0, image)
             painter.end()
-    
 
-if __name__ == "__main__":
-    app = QApplication([])
-    fetique = FetiqueApp()
-    sys.exit(app.exec())

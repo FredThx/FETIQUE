@@ -19,7 +19,7 @@ class Feuille(QWidget):
         self.png_temp_file = png_temp_file
         self.f_width = width
         self.f_height = height
-        self.setFixedSize(width*1.5, height*1.5) #TODO: mettre un zoom
+        self.setFixedSize(int(width*1.5), int(height*1.5)) #TODO: mettre un zoom
         self.setStyleSheet("border: 1px solid black; border-radius: 10px;")
         self.label = QLabel(self)
         self.image = None
@@ -50,7 +50,10 @@ class Feuille(QWidget):
                     pass
         dwg.save()
         drawing = svg2rlg(self.svg_temp_file)
-        renderPM.drawToFile(drawing, self.png_temp_file, fmt='PNG')
+        try:
+            renderPM.drawToFile(drawing, self.png_temp_file, fmt='PNG')
+        except Exception as e:
+            print(e)
         self.image = QPixmap(self.png_temp_file)
         self.label.setPixmap(self.image.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
         self.label.adjustSize()
